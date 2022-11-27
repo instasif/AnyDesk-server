@@ -18,6 +18,7 @@ async function run(){
     try{
         const cateroriesCollection = client.db('anyDesk').collection('categories')
         const categoriesIdCollection = client.db('anyDesk').collection('furnitures')
+        const ordersCollection = client.db('anyDesk').collection('orders')
 
         app.get('/categories', async(req, res) =>{
             const query = {};
@@ -31,6 +32,14 @@ async function run(){
             const result = await categoriesIdCollection.find(query).toArray();
             res.send(result);
         })
+
+        app.post('/orders', async(req, res) =>{
+            const booking = req.body;
+            console.log(booking);
+            const result = await ordersCollection.insertOne(booking);
+            res.send(result);
+        })
+
     }
     finally{
 
@@ -40,26 +49,26 @@ run().catch(console.log)
 
 
 
-const categories = require('./data/categories.json')
-const items = require('./data/furniture.json')
+// const categories = require('./data/categories.json')
+// const items = require('./data/furniture.json')
 
 
-// app.get('/categories', (req, res) =>{
-//     res.send(categories);
-// })
+// // app.get('/categories', (req, res) =>{
+// //     res.send(categories);
+// // })
 
-// app.get('/category/:id', (req, res) =>{
+// // app.get('/category/:id', (req, res) =>{
+// //     const id = req.params.id;
+// //     console.log(id)
+// //     const selectedCategory = items.filter( item => item.categoryID === id);
+// //     res.send(selectedCategory);
+// // })
+
+// app.get('/items/:id', (req, res) =>{
 //     const id = req.params.id;
-//     console.log(id)
-//     const selectedCategory = items.filter( item => item.categoryID === id);
-//     res.send(selectedCategory);
+//     const selctedItems = items.find( item => item._id === id);
+//     res.send(selctedItems);
 // })
-
-app.get('/items/:id', (req, res) =>{
-    const id = req.params.id;
-    const selctedItems = items.find( item => item._id === id);
-    res.send(selctedItems);
-})
 
 app.get('/', (req, res) =>{
     res.send('Assignment api running...');
