@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
 const app = express();
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -11,14 +12,16 @@ app.use(express.json());
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.2lbo3hl.mongodb.net/?retryWrites=true&w=majority`;
+console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
 async function run(){
     try{
-        const cateroriesCollection = client.db('anyDesk').collection('categories')
-        const categoriesIdCollection = client.db('anyDesk').collection('furnitures')
-        const ordersCollection = client.db('anyDesk').collection('orders')
+        const cateroriesCollection = client.db('anyDesk').collection('categories');
+        const categoriesIdCollection = client.db('anyDesk').collection('furnitures');
+        const ordersCollection = client.db('anyDesk').collection('orders');
+        const usersCollection = client.db('anyDesk').collection('users');
 
         app.get('/categories', async(req, res) =>{
             const query = {};
@@ -45,6 +48,24 @@ async function run(){
             const query = { email: email };
             const orders = await ordersCollection.find(query).toArray();
             res.send(orders);
+        });
+
+        app.get('/jwt', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            if (user) {
+                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1h' })
+                return res.send({ accessToken: token });
+            }
+            res.status(403).send({accessToken: ''})
+        });
+
+        app.post('/users', async(req, res) =>{
+            const user = req.body;
+            console.log(user);
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
         })
 
     }
@@ -53,29 +74,6 @@ async function run(){
     }
 }
 run().catch(console.log)
-
-
-
-// const categories = require('./data/categories.json')
-// const items = require('./data/furniture.json')
-
-
-// // app.get('/categories', (req, res) =>{
-// //     res.send(categories);
-// // })
-
-// // app.get('/category/:id', (req, res) =>{
-// //     const id = req.params.id;
-// //     console.log(id)
-// //     const selectedCategory = items.filter( item => item.categoryID === id);
-// //     res.send(selectedCategory);
-// // })
-
-// app.get('/items/:id', (req, res) =>{
-//     const id = req.params.id;
-//     const selctedItems = items.find( item => item._id === id);
-//     res.send(selctedItems);
-// })
 
 app.get('/', (req, res) =>{
     res.send('Assignment api running...');
