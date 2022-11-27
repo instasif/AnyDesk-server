@@ -1,0 +1,14 @@
+[
+    {
+      "categoryID": "01",
+      "name": "Chair"
+    },
+    {
+      "categoryID": "02",
+      "name": "Table"
+    },
+    {
+      "categoryID": "03",
+      "name": "Bed"
+    }
+  ]
