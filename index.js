@@ -59,7 +59,14 @@ async function run(){
             console.log(booking);
             const result = await ordersCollection.insertOne(booking);
             res.send(result);
-        })
+        });
+
+        // app.delete('/order/:id', async(req, res)=>{
+        //     const id = req.params.id;
+        //     const filter = { _id: ObjectId(id) };
+        //     const result = await ordersCollection.deleteOne(filter);
+        //     res.send(result);
+        // })
 
         app.get('/order', verifyJWT, async(req, res) =>{
             const email = req.query.email;
@@ -71,6 +78,8 @@ async function run(){
             const orders = await ordersCollection.find(query).toArray();
             res.send(orders);
         });
+
+        
 
         app.get('/jwt', async (req, res) => {
             const email = req.query.email;
@@ -134,7 +143,9 @@ async function run(){
             const product = req.body;
             const result = await addedProductsCollection.insertOne(product);
             res.send(result);
-        })
+        });
+
+        
 
     }
     finally{
