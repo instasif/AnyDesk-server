@@ -39,6 +39,7 @@ async function run(){
         const categoriesIdCollection = client.db('anyDesk').collection('furnitures');
         const ordersCollection = client.db('anyDesk').collection('orders');
         const usersCollection = client.db('anyDesk').collection('users');
+        const addedProductsCollection = client.db('anyDesk').collection('addedProducts');
 
         app.get('/categories', async(req, res) =>{
             const query = {};
@@ -95,7 +96,7 @@ async function run(){
             res.send(users);
         })
 
-        /**sakjdhkasjfhksdjhfkdsjhfkj */
+        
         app.get('/users/admin/:email', async(req, res)=>{
             const email = req.params.email;
             const query = { email};
@@ -122,7 +123,12 @@ async function run(){
             const result = await usersCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
-        /**sakjdhkasjfhksdjhfkdsjhfkj */
+        
+        app.post('/addedProducts', async(req, res) =>{
+            const product = req.body;
+            const result = await addedProductsCollection.insertOne(product);
+            res.send(result);
+        })
 
     }
     finally{
