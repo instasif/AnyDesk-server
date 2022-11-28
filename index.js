@@ -123,6 +123,12 @@ async function run(){
             const result = await usersCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
+
+        app.get('/addedProducts', async(req, res) =>{
+            const query = {};
+            const results = await addedProductsCollection.find(query).toArray();
+            res.send(results);
+        })
         
         app.post('/addedProducts', async(req, res) =>{
             const product = req.body;
